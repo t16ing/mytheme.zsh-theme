@@ -46,8 +46,11 @@ function theme_precmd {
       PR_FILLBAR="\${(l.(($TERMWIDTH - ($promptsize + $rubypromptsize + $gitsize)))..${PR_HBAR}.)}"
     fi
 
-    now=$(($(date +%s%N)/1000000))
-    elapsed="$PR_RED$(($now-$timer))ms"
+    if [[ -v timer ]]; then
+        now=$(($(date +%s%N)/1000000))
+        elapsed="$PR_RED$(($now-$timer))ms"
+        unset timer
+    fi
 }
 
 
@@ -178,7 +181,7 @@ $PR_HBAR\
 
     # display exitcode on the right when >0
     return_code="%(?..%{$fg[red]%}%? ↵ %{$reset_color%})"
-    RPROMPT=' $return_code $elapsed $PR_CYAN$PR_HBAR$PR_BLUE$PR_HBAR\
+    RPROMPT=' $return_code $elapsed [%!] $PR_CYAN$PR_HBAR$PR_BLUE$PR_HBAR\
 ($PR_YELLOW%D{%a %Y-%m-%d %H:%M:%S}\
 $PR_BLUE)$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_NO_COLOUR'
 
