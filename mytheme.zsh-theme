@@ -45,6 +45,9 @@ function theme_precmd {
     else
       PR_FILLBAR="\${(l.(($TERMWIDTH - ($promptsize + $rubypromptsize + $gitsize)))..${PR_HBAR}.)}"
     fi
+
+    now=$(($(date +%s%N)/1000000))
+    elapsed="$PR_RED$(($now-$timer))ms"
 }
 
 
@@ -54,6 +57,8 @@ theme_preexec () {
 	local CMD=${1[(wr)^(*=*|sudo|-*)]}
 	echo -n "\ek$CMD\e\\"
     fi
+
+    timer=$(($(date +%s%N)/1000000))
 }
 
 ZSH_THEME_GIT_PROMPT_ADDED="%{$fg[cyan]%}+"
@@ -173,7 +178,7 @@ $PR_HBAR\
 
     # display exitcode on the right when >0
     return_code="%(?..%{$fg[red]%}%? ↵ %{$reset_color%})"
-    RPROMPT=' $return_code$PR_CYAN$PR_HBAR$PR_BLUE$PR_HBAR\
+    RPROMPT=' $return_code $elapsed $PR_CYAN$PR_HBAR$PR_BLUE$PR_HBAR\
 ($PR_YELLOW%D{%a %Y-%m-%d %H:%M:%S}\
 $PR_BLUE)$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_NO_COLOUR'
 
@@ -188,3 +193,5 @@ setprompt
 autoload -U add-zsh-hook
 add-zsh-hook precmd  theme_precmd
 add-zsh-hook preexec theme_preexec
+
+timer=$(($(date +%s%N)/1000000))
