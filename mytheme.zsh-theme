@@ -76,7 +76,8 @@ function mygit() {
     origin=$(command git remote show -n origin 2>/dev/null | grep 'Fetch URL' | cut -d ':' -f 2- | cut -d' ' -f 2 | sed 's/\.git$//')
     repo=$(basename ${origin})
     message=$(git log -1 --pretty=%B)
-    echo "$ZSH_THEME_GIT_PROMPT_LOCAL_BEFORE$(git_prompt_status)${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_LOCAL_AFTER$(git_prompt_short_sha) $message $ZSH_THEME_GIT_PROMPT_REMOTE_BEFORE$(git_current_user_name)@${repo}$ZSH_THEME_GIT_PROMPT_REMOTE_AFTER"
+    [[ "$(git_commits_ahead)" != "" ]] && remote_status=$ZSH_THEME_GIT_PROMPT_MODIFIED || remote_status=""
+    echo "$ZSH_THEME_GIT_PROMPT_LOCAL_BEFORE$(git_prompt_status)${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_LOCAL_AFTER$(git_prompt_short_sha) $message $ZSH_THEME_GIT_PROMPT_REMOTE_BEFORE$remote_status$(git_current_user_name)@${repo}$ZSH_THEME_GIT_PROMPT_REMOTE_AFTER"
   fi
 }
 
