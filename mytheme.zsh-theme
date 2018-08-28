@@ -48,7 +48,7 @@ function theme_precmd {
 
     if [[ -v timer ]]; then
         now=$(($(date +%s%N)/1000000))
-        elapsed="$PR_RED$(($now-$timer))ms"
+        elapsed="$(($now-$timer))ms"
         unset timer
     fi
 }
@@ -81,9 +81,10 @@ function mygit() {
   if [[ "$(git config --get oh-my-zsh.hide-status)" != "1" ]]; then
     ref=$(command git symbolic-ref HEAD 2> /dev/null) || \
     ref=$(command git rev-parse --short HEAD 2> /dev/null) || return
-    origin=$(command git remote show -n origin 2>/dev/null | grep 'Fetch URL' | cut -d ':' -f 2- | cut -d' ' -f 2 | sed 's/\.git$//')
+    origin=$(command git remote show -n origin 2>/dev/null | grep 'Fetch URL' | cut -d ':' -f 2- | cut -d' ' -f 2)
     repo=$(basename ${origin})
     message=$(git log -1 --pretty=%B)
+    message=${message:0:32}
     [[ "$(git_commits_ahead)" != "" ]] && remote_status=$ZSH_THEME_GIT_PROMPT_MODIFIED || remote_status=""
     echo "$ZSH_THEME_GIT_PROMPT_LOCAL_BEFORE$(git_prompt_status)${ref#refs/heads/}$ZSH_THEME_GIT_PROMPT_LOCAL_AFTER$(git_prompt_short_sha) $message $ZSH_THEME_GIT_PROMPT_REMOTE_BEFORE$remote_status$(git_current_user_name)@${repo}$ZSH_THEME_GIT_PROMPT_REMOTE_AFTER"
   fi
@@ -181,7 +182,7 @@ $PR_HBAR\
 
     # display exitcode on the right when >0
     return_code="%(?..%{$fg[red]%}%? ↵ %{$reset_color%})"
-    RPROMPT=' $return_code $elapsed [%!] $PR_CYAN$PR_HBAR$PR_BLUE$PR_HBAR\
+    RPROMPT=' $return_code$PR_RED$elapsed [%!] $PR_CYAN$PR_HBAR$PR_BLUE$PR_HBAR\
 ($PR_YELLOW%D{%a %Y-%m-%d %H:%M:%S}\
 $PR_BLUE)$PR_HBAR$PR_CYAN$PR_LRCORNER$PR_NO_COLOUR'
 
